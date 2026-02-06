@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIB Clone - IT & Gaming Gear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; background-color: #f2f4f5; }
+        .jib-gradient { background: linear-gradient(90deg, #001f5b 0%, #0045a0 100%); }
+        .star-rating { color: #fbbf24; }
+        .modal-animate { animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .thumb-active { border: 2px solid #0045a0; }
+        .badge-hot { 
+            position: absolute; top: 10px; right: 10px; 
+            background-color: #ef4444; color: white; 
+            padding: 2px 10px; border-radius: 4px;
+            font-size: 0.7rem; font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        .category-active { color: #0045a0 !important; border-bottom: 2px solid #0045a0; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="bg-gray-100 text-gray-500 text-xs py-1 px-4 hidden md:block">
+        <div class="container mx-auto flex justify-end gap-4">
+            <span><i class="fas fa-phone-alt"></i> 02-017-4444</span>
+            <span><i class="fas fa-envelope"></i> contact@jib-clone.com</span>
+        </div>
+    </div>
+
+    <nav class="jib-gradient text-white p-4 sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <a href="index.html" class="text-3xl font-bold italic tracking-wider flex items-center gap-2">
+                <i class="fas fa-desktop"></i> JIB <span class="text-sm font-normal not-italic opacity-80 mt-2">Clone</span>
+            </a>
+
+            <div class="flex-1 w-full max-w-2xl relative">
+                <input type="text" id="search-input" onkeyup="searchProduct()" placeholder="ค้นหาสินค้า... (เช่น การ์ดจอ, โน้ตบุ๊ก)" class="w-full p-2.5 pl-4 rounded-r-none rounded-l-md text-gray-700 outline-none focus:ring-2 focus:ring-blue-400">
+                <button onclick="searchProduct()" class="absolute right-0 top-0 h-full bg-yellow-400 text-black font-bold px-6 rounded-r-md hover:bg-yellow-500 transition">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-6 text-sm font-medium">
+                <div id="auth-status" class="flex gap-4">
+                    <a href="login.html" class="flex items-center gap-1 hover:text-yellow-400 transition"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ</a>
+                    <span class="opacity-50">|</span>
+                    <a href="register.html" class="flex items-center gap-1 hover:text-yellow-400 transition">สมัครสมาชิก</a>
+                </div>
+                <div class="relative cursor-pointer group" onclick="openCart()">
+                    <div class="flex flex-col items-center">
+                        <div class="relative">
+                            <i class="fas fa-shopping-cart text-2xl group-hover:text-yellow-400 transition"></i>
+                            <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold border-2 border-blue-900">0</span>
+                        </div>
+                        <span class="text-xs mt-1">ตะกร้า</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="bg-white shadow-sm border-b mb-6 sticky top-[80px] z-40">
+        <div class="container mx-auto">
+            <ul class="flex gap-6 text-sm font-bold text-gray-600 py-3 overflow-x-auto" id="category-list">
+                <li onclick="filterCategory('ALL')" class="category-item category-active hover:text-blue-700 cursor-pointer whitespace-nowrap px-2 pb-1"><i class="fas fa-th-large mr-2"></i> สินค้าทั้งหมด</li>
+                <li onclick="filterCategory('NOTEBOOK')" class="category-item hover:text-blue-700 cursor-pointer whitespace-nowrap px-2 pb-1">NOTEBOOK / TABLET</li>
+                <li onclick="filterCategory('MONITOR')" class="category-item hover:text-blue-700 cursor-pointer whitespace-nowrap px-2 pb-1">PC / MONITOR</li>
+                <li onclick="filterCategory('GAMING')" class="category-item hover:text-blue-700 cursor-pointer whitespace-nowrap px-2 pb-1">GAMING GEAR</li>
+                <li onclick="filterCategory('ACCESSORIES')" class="category-item hover:text-blue-700 cursor-pointer whitespace-nowrap px-2 pb-1">ACCESSORIES</li>
+                <li onclick="filterCategory('GADGET')" class="category-item hover:text-blue-700 cursor-pointer whitespace-nowrap px-2 pb-1">SMART GADGETS</li>
+            </ul>
+        </div>
+    </div>
+
+    <main class="container mx-auto p-4">
+        
+        <div class="w-full h-48 md:h-80 rounded-xl overflow-hidden mb-8 shadow-md relative group">
+            <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=1200&q=80" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex flex-col justify-center px-10 text-white">
+                <h2 class="text-4xl font-bold mb-2">JIB BIG SALE</h2>
+                <p class="text-xl mb-4">ลดกระหน่ำสินค้าไอที สูงสุด 50%</p>
+                <button class="bg-yellow-400 text-black px-6 py-2 rounded-md font-bold w-fit hover:bg-yellow-500">ช้อปเลย</button>
+            </div>
+        </div>
+
+        <div id="best-seller-section" class="mb-10">
+            <div class="flex justify-between items-end mb-4 border-b pb-2 border-gray-300">
+                <h2 class="text-2xl font-bold text-blue-900 uppercase">
+                    <i class="fas fa-star text-yellow-500 mr-2"></i> สินค้าขายดี
+                </h2>
+            </div>
+            <div id="best-seller-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+        </div>
+
+        <div class="mb-10">
+             <div class="flex justify-between items-end mb-4 border-b pb-2 border-gray-300">
+                <h2 class="text-xl font-bold text-gray-800 uppercase flex items-center">
+                    <i class="fas fa-layer-group mr-2 text-blue-600"></i> <span id="section-title">สินค้าทั้งหมด</span>
+                </h2>
+                <span id="product-count" class="text-sm text-gray-500"></span>
+            </div>
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        </div>
+    </main>
+
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[200] p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-lg w-full max-w-md overflow-hidden shadow-2xl modal-animate flex flex-col max-h-[95vh]">
+            <div class="bg-blue-900 p-4 text-white flex justify-between items-center">
+                <h3 class="text-lg font-bold"><i class="fas fa-shopping-cart mr-2"></i>ตะกร้าสินค้า</h3>
+                <button onclick="closeCart()" class="text-gray-300 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1">
+                <div id="cart-list" class="space-y-4 mb-6"></div>
+                
+                <div class="mb-6 bg-gray-50 p-3 rounded border">
+                    <h4 class="font-bold text-blue-900 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> ที่อยู่จัดส่ง</h4>
+                    <input type="text" id="ship-name" placeholder="ชื่อ-นามสกุล ผู้รับ" class="w-full border p-2 rounded mb-2 text-sm">
+                    <textarea id="ship-address" placeholder="ที่อยู่ (บ้านเลขที่, ถนน, แขวง/ตำบล...)" class="w-full border p-2 rounded mb-2 text-sm" rows="2"></textarea>
+                    <input type="tel" id="ship-phone" placeholder="เบอร์โทรศัพท์" class="w-full border p-2 rounded text-sm">
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-bold text-blue-900 text-sm mb-2"><i class="fas fa-truck"></i> รูปแบบการจัดส่ง</h4>
+                    <div class="space-y-2 text-sm">
+                        <label class="flex items-center justify-between border p-2 rounded cursor-pointer hover:bg-blue-50">
+                            <div class="flex items-center gap-2">
+                                <input type="radio" name="shipping" value="40" checked onchange="renderCart()">
+                                <span>Kerry Express (2-3 วัน)</span>
+                            </div>
+                            <span class="font-bold text-gray-600">฿40</span>
+                        </label>
+                        <label class="flex items-center justify-between border p-2 rounded cursor-pointer hover:bg-blue-50">
+                            <div class="flex items-center gap-2">
+                                <input type="radio" name="shipping" value="100" onchange="renderCart()">
+                                <span>Same Day Delivery (กทม.)</span>
+                            </div>
+                            <span class="font-bold text-gray-600">฿100</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-4">
+                    <p class="text-xs font-bold text-blue-800 mb-2">โค้ดส่วนลด</p>
+                    <select id="coupon-select" onchange="renderCart()" class="w-full p-2 border rounded text-sm outline-none">
+                        <option value="0">เลือกโค้ดส่วนลด</option>
+                        <option value="50">NEWUSER - ลด 50 บาท</option>
+                        <option value="10">ITFAIR - ลด 10%</option>
+                    </select>
+                </div>
+
+                <div class="border-t pt-4 space-y-2 text-sm">
+                    <div class="flex justify-between text-gray-600"><span>ค่าสินค้า:</span><span id="subtotal">฿0</span></div>
+                    <div class="flex justify-between text-gray-600"><span>ค่าจัดส่ง:</span><span id="shipping-cost">฿0</span></div>
+                    <div class="flex justify-between text-green-600"><span>ส่วนลด:</span><span id="discount">฿0</span></div>
+                    <div class="flex justify-between font-bold text-xl text-red-600 pt-2 border-t mt-2">
+                        <span>ยอดสุทธิ:</span><span id="cart-total">฿0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-gray-50 border-t grid grid-cols-2 gap-3">
+                 <button onclick="closeCart()" class="bg-white border border-gray-300 text-gray-700 py-2 rounded font-bold hover:bg-gray-100">เลือกต่อ</button>
+                 <button onclick="checkOut()" class="bg-blue-900 text-white py-2 rounded font-bold hover:bg-blue-800 shadow">ชำระเงิน</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="detail-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[150] p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl w-full max-w-4xl max-h-[95vh] overflow-y-auto shadow-2xl relative">
+            <button onclick="closeDetail()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 z-10 bg-white rounded-full p-1"><i class="fas fa-times text-2xl"></i></button>
+            <div class="p-6 md:p-10">
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="lg:w-5/12">
+                        <div class="border rounded-lg p-2 mb-3 bg-white">
+                            <img id="detail-img-main" class="w-full h-64 md:h-80 object-contain mx-auto" src="">
+                        </div>
+                        <div id="thumb-container" class="flex gap-2 overflow-x-auto pb-2 justify-center"></div>
+                    </div>
+                    <div class="lg:w-7/12">
+                        <h2 id="detail-name" class="text-2xl font-bold mb-2 text-blue-900 leading-tight"></h2>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div id="detail-stars" class="text-sm"></div>
+                            <span class="text-gray-400 text-sm">| รหัสสินค้า: <span id="product-code"></span></span>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                            <p class="text-sm text-gray-500 mb-1">ราคาปกติ</p>
+                            <p id="detail-price" class="text-3xl font-bold text-red-600"></p>
+                            <p class="text-xs text-gray-500 mt-2"><i class="fas fa-check-circle text-green-500"></i> มีสินค้าพร้อมส่ง</p>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="font-bold text-gray-800 border-b pb-1 mb-2">สเปคสินค้า</h3>
+                            <p id="detail-desc" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line font-light"></p>
+                        </div>
+                        <button id="add-from-detail" class="w-full bg-blue-600 text-white py-3 rounded-md font-bold hover:bg-blue-700 transition shadow flex items-center justify-center gap-2 text-lg">
+                            <i class="fas fa-cart-plus"></i> เพิ่มลงตะกร้า
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-10 border-t pt-6 bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-bold mb-4 text-gray-800">ความคิดเห็นจากลูกค้า</h3>
+                    <div id="write-review-box" class="hidden bg-white p-4 rounded border mb-4">
+                        <div class="flex gap-1 text-xl mb-3" id="star-input">
+                            <i class="far fa-star cursor-pointer text-gray-300" onclick="setRating(1)"></i>
+                            <i class="far fa-star cursor-pointer text-gray-300" onclick="setRating(2)"></i>
+                            <i class="far fa-star cursor-pointer text-gray-300" onclick="setRating(3)"></i>
+                            <i class="far fa-star cursor-pointer text-gray-300" onclick="setRating(4)"></i>
+                            <i class="far fa-star cursor-pointer text-gray-300" onclick="setRating(5)"></i>
+                        </div>
+                        <textarea id="review-text" class="w-full p-2 border rounded text-sm outline-none mb-2" rows="2" placeholder="เขียนรีวิวสินค้า..."></textarea>
+                        <button onclick="submitReview()" class="bg-blue-900 text-white px-4 py-1.5 rounded text-sm">ส่งรีวิว</button>
+                    </div>
+                    <div id="review-list" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fallbackImg = "https://via.placeholder.com/400x400?text=No+Image";
+        
+        // ข้อมูลสินค้า 16 รายการ เรียงตามหมวดหมู่ (ชื่อไทย)
+        const products = [
+            // --- ACCESSORIES ---
+            { id: 5, name: "ลำโพงบลูทูธพกพา", category: "ACCESSORIES", price: 4200, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/th-11134207-7rasc-m2htt2nakip08d.webp", "https://down-th.img.susercontent.com/file/th-11134207-7rasa-m2htsxtlmp44d4.webp"], desc: "- กำลังขับ 20W เสียงเบสแน่น\n- กันน้ำระดับ IPX7", rating: 4.6, reviews: 156 },
+            { id: 10, name: "พาวเวอร์แบงค์ 20000mAh PD", category: "ACCESSORIES", price: 990, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/th-11134207-7rasg-m4a61hy2asyf12@resize_w450_nl.webp", "https://down-th.img.susercontent.com/file/th-11134207-7rasl-m4a61hy29ds4c0@resize_w450_nl.webp"], desc: "- ความจุ 20,000 mAh\n- รองรับชาร์จเร็ว PD 20W", rating: 4.5, reviews: 410 },
+            { id: 13, name: "SSD พกพา 1TB USB-C", category: "ACCESSORIES", price: 3290, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/th-11134201-7r991-lrijnfap09ta14@resize_w450_nl.webp", "https://down-th.img.susercontent.com/file/th-11134201-7r98q-lrijnf9l1wg617.webp"], desc: "- อ่าน/เขียน 1050MB/s\n- เชื่อมต่อ USB 3.2 Gen 2 Type-C", rating: 4.9, reviews: 34 },
+            { id: 16, name: "เราเตอร์ Wi-Fi 6 AX3000", category: "ACCESSORIES", price: 1990, isBestSeller: true, images: ["https://down-th.img.susercontent.com/file/th-11134201-7rasl-m77f6c8cperba9.webp", "https://down-th.img.susercontent.com/file/th-11134201-7rasd-m77f6cfkew9s4b.webp"], desc: "- Dual Band Gigabit\n- ความเร็วสูงสุด 3000Mbps\n- รองรับ MU-MIMO", rating: 4.7, reviews: 110 },
+
+            // --- GADGET ---
+            { id: 4, name: "กล้อง Mirrorless Full Frame", category: "GADGET", price: 35000, isBestSeller: false, images: ["https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600", "https://images.unsplash.com/photo-1522133321627-c187a111362d?w=600"], desc: "- เซนเซอร์ Full Frame\n- ถ่ายวิดีโอ 4K", rating: 5.0, reviews: 42 },
+            { id: 9, name: "สมาร์ทวอทช์ Series 7 GPS", category: "GADGET", price: 9900, isBestSeller: false, images: ["https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600", "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600"], desc: "- จอภาพ Always-On Retina\n- วัดค่าสุขภาพแม่นยำ", rating: 4.7, reviews: 65 },
+            { id: 11, name: "หุ่นยนต์ดูดฝุ่น เลเซอร์นำทาง", category: "GADGET", price: 8500, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/th-11134207-7ras8-m3asph1hznxk51.webp", "https://down-th.img.susercontent.com/file/th-11134207-7rasa-m3asph21yup405.webp"], desc: "- ระบบนำทางด้วยเลเซอร์\n- สั่งงานผ่านแอปฯ มือถือ", rating: 4.6, reviews: 92 },
+            { id: 15, name: "เมาส์ปากกาสำหรับวาดรูป 10 นิ้ว", category: "GADGET", price: 4500, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/839f43a7c8a3da87c650ade0387917fe.webp", "https://down-th.img.susercontent.com/file/dc99ffa4b90ecc238a01d8fb368eec81.webp"], desc: "- แรงกด 8192 ระดับ\n- ปากกาไม่ต้องชาร์จ\n- ปุ่มลัด 6 ปุ่ม", rating: 4.8, reviews: 19 },
+
+            // --- GAMING ---
+            { id: 6, name: "หูฟังไร้สาย ANC ตัดเสียงรบกวน", category: "GAMING", price: 6500, isBestSeller: true, images: ["https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600", "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600"], desc: "- ตัดเสียงรบกวน Active Noise Cancelling\n- แบตเตอรี่นาน 30 ชม.", rating: 4.9, reviews: 320 },
+            { id: 7, name: "เมาส์เกมมิ่ง RGB 16K DPI", category: "GAMING", price: 1290, isBestSeller: false, images: ["https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600", "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600"], desc: "- เซนเซอร์ 16,000 DPI\n- ไฟ RGB ปรับแต่งได้", rating: 4.4, reviews: 78 },
+            { id: 8, name: "คีย์บอร์ดแมคคานิคอล RGB", category: "GAMING", price: 2500, isBestSeller: true, images: ["https://images.unsplash.com/photo-1595225476474-87563907a212?w=600", "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600"], desc: "- Blue Switch เสียงกดสนุก\n- ไฟ RGB Backlight", rating: 4.8, reviews: 150 },
+            { id: 14, name: "ไมโครโฟนสตรีมมิ่ง USB", category: "GAMING", price: 2990, isBestSeller: false, images: ["https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600", "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=600"], desc: "- ไมค์คอนเดนเซอร์สำหรับสตรีม\n- มี Pop Filter ในตัว\n- เสียบแล้วใช้ได้เลย", rating: 4.6, reviews: 82 },
+
+            // --- MONITOR ---
+            { id: 1, name: "สมาร์ททีวี 55 นิ้ว 4K UHD HDR", category: "MONITOR", price: 15900, isBestSeller: true, images: ["data:image/jpeg;base64,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Ck75lcP8LVelj+Gq/Mrh/har0sfw08x+DZ+kaMxdv22+cFeGKx+Eb5wUi/Mrh/har0sfw0+ZXD/C1XpY/hqOt+Ftr+zg24vF4Vnnt/NX4cYiP96zz2/mu1+ZbD/C1XpY/hp8y2H+FqvSx/DVXkv4JVnIDFovDR+kb+aqcXi8PH6Rv5rrz2GcPH99Velj+Go42lwSkM/cmFNqauoaf1jw5j42fsjKwA7jdxIaN2p3V3fhbczb/LEfho/SN/NV+VYj/fR+kb+awex9s3SVcstLVmohq4yRkDmN1G9pa5hN+X9FII7D9D4ap9JF8NN5O41nYuna/EqtzXBw7ghFwbi4nk0uOseVSuuY2U2Ip8PkfJC+VzpGZDncwgNzX0ytGq6dUZUIiIAiIgKFRxtW+oxKqFBAySOkjN6ioMbg023sjc4WceAtfUm+gUkIgNZg+CRU0TIYm5Y2CwAcR1k8yd5PFeIdmqRk5qW00bal17yhtnuuLG7hvuFtkQFsRDp8pXsNVUQBERAEREBSyWVUQFLJZVRAUsq2REAREQFLLyY+vyle0QGNU0LJGuY9uZj2lrmkkhzSLEEcli4XgNPTMMdPC2JhNy1gygnmbb1s0QHA7ebFulIrKTSupxdpGhnYNe1u5nTQnq3HToNj8bNXA10kT4qhneyxvjcwh/2gHAXad/sW+RAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH/9k=", "https://images.unsplash.com/photo-1601944179066-29786cb9d32a?w=600"], desc: "- จอ 4K UHD 3840x2160\n- ระบบ Android TV", rating: 4.8, reviews: 125 },
+            { id: 12, name: "จอเกมมิ่ง 27 นิ้ว 165Hz", category: "MONITOR", price: 7900, isBestSeller: false, images: ["https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600", "https://images.unsplash.com/photo-1616763355548-1b606f439f86?w=600"], desc: "- จอ IPS 27 นิ้ว\n- รีเฟรชเรท 165Hz", rating: 4.8, reviews: 55 },
+
+            // --- NOTEBOOK ---
+            { id: 2, name: "โน้ตบุ๊ก Ultra Slim Core i7", category: "NOTEBOOK", price: 28900, isBestSeller: true, images: ["https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?w=600", "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600"], desc: "- Intel Core i7 Gen 11\n- 16GB RAM / 512GB SSD", rating: 4.7, reviews: 89 },
+            { id: 3, name: "แท็บเล็ต Pro 11 นิ้ว WiFi 128GB", category: "NOTEBOOK", price: 12500, isBestSeller: false, images: ["https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=600", "https://images.unsplash.com/photo-1612392175254-5b6b67f611b8?w=600"], desc: "- จอ Retina 11 นิ้ว\n- รองรับปากกา Stylus", rating: 4.5, reviews: 210 }
+        ];
+
+        let cart = [];
+        let currentRatingInput = 0;
+        let activeProductId = null;
+        let currentCategory = 'ALL';
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        function init() {
+            filterCategory('ALL');
+            if(currentUser) {
+                document.getElementById('auth-status').innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="flex flex-col text-right leading-tight">
+                            <span class="text-[10px] text-gray-300">ยินดีต้อนรับ</span>
+                            <span class="font-bold text-sm">${currentUser.user}</span>
+                        </div>
+                        <div class="h-6 w-px bg-white/20"></div>
+                        <a href="history.html" class="text-xs bg-blue-800 hover:bg-blue-700 px-3 py-1.5 rounded transition flex items-center gap-1"><i class="fas fa-history"></i> ประวัติ</a>
+                        <button onclick="logout()" class="text-xs text-red-300 hover:text-white underline ml-1">ออก</button>
+                    </div>`;
+                document.getElementById('write-review-box').classList.remove('hidden');
+            }
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.category-item').forEach(el => el.classList.remove('category-active'));
+            event?.target.closest('li')?.classList.add('category-active');
+            const titleMap = { 'ALL': 'สินค้าทั้งหมด', 'NOTEBOOK': 'Notebook & Tablet', 'MONITOR': 'Monitor & TV', 'GAMING': 'Gaming Gear', 'ACCESSORIES': 'Accessories', 'GADGET': 'Smart Gadgets' };
+            document.getElementById('section-title').innerText = titleMap[category] || category;
+            if (category === 'ALL') {
+                document.getElementById('best-seller-section').classList.remove('hidden');
+                renderBestSellers();
+                renderProductGrid(products);
+            } else {
+                document.getElementById('best-seller-section').classList.add('hidden');
+                renderProductGrid(products.filter(p => p.category === category));
+            }
+        }
+
+        function searchProduct() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            document.getElementById('best-seller-section').classList.add('hidden');
+            document.getElementById('section-title').innerText = `ผลการค้นหา: "${query}"`;
+            renderProductGrid(products.filter(p => p.name.toLowerCase().includes(query)));
+        }
+
+        function createProductCard(p) {
+            const badge = p.isBestSeller ? '<div class="badge-hot">ขายดี</div>' : '';
+            return `
+                <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-all cursor-pointer group flex flex-col h-full relative" onclick="openDetail(${p.id})">
+                    ${badge}
+                    <div class="overflow-hidden rounded-md mb-3 h-40 bg-gray-100 flex items-center justify-center">
+                        <img src="${p.images[0]}" onerror="this.src='${fallbackImg}'" class="w-full h-full object-contain group-hover:scale-105 transition duration-300 p-2">
+                    </div>
+                    <div class="flex-1 flex flex-col">
+                        <h3 class="font-medium text-gray-700 text-sm mb-1 line-clamp-2 h-10 leading-snug group-hover:text-blue-700">${p.name}</h3>
+                        <div class="mt-auto">
+                            <p class="text-xs text-gray-400 mb-1">รหัส: JIB-0${p.id}</p>
+                            <div class="flex justify-between items-center">
+                                <p class="text-red-600 font-bold text-lg">฿${p.price.toLocaleString()}</p>
+                                <button onclick="event.stopPropagation(); addToCart(${p.id})" class="bg-blue-600 text-white p-1.5 rounded hover:bg-blue-700 transition"><i class="fas fa-cart-plus text-sm"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderBestSellers() {
+            document.getElementById('best-seller-grid').innerHTML = products.filter(p => p.isBestSeller).slice(0, 4).map(p => createProductCard(p)).join('');
+        }
+
+        function renderProductGrid(list) {
+            document.getElementById('product-grid').innerHTML = list.length ? list.map(p => createProductCard(p)).join('') : '<div class="col-span-full text-center py-10 text-gray-400">ไม่พบสินค้าในหมวดนี้</div>';
+            document.getElementById('product-count').innerText = `(${list.length} รายการ)`;
+        }
+
+        function changeMainImage(src, el) {
+            document.getElementById('detail-img-main').src = src;
+            document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('thumb-active'));
+            el.classList.add('thumb-active');
+        }
+
+        function openDetail(id) {
+            const p = products.find(x => x.id === id);
+            if(!p) return;
+            activeProductId = id;
+            document.getElementById('detail-name').innerText = p.name;
+            document.getElementById('product-code').innerText = `JIB-0${p.id}`;
+            document.getElementById('detail-price').innerText = `฿${p.price.toLocaleString()}`;
+            document.getElementById('detail-desc').innerText = p.desc;
+            document.getElementById('detail-stars').innerHTML = generateStars(p.rating);
+            document.getElementById('detail-img-main').src = p.images[0];
+            document.getElementById('thumb-container').innerHTML = p.images.map((img, idx) => `<img src="${img}" class="thumb-item w-14 h-14 object-cover rounded border cursor-pointer hover:border-blue-500 transition-all ${idx === 0 ? 'thumb-active' : ''}" onclick="changeMainImage('${img}', this)">`).join('');
+            document.getElementById('add-from-detail').onclick = () => addToCart(id);
+            loadReviews(id);
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeDetail() { document.getElementById('detail-modal').classList.add('hidden'); }
+        function openCart() { document.getElementById('cart-modal').classList.remove('hidden'); }
+        function closeCart() { document.getElementById('cart-modal').classList.add('hidden'); }
+
+        function addToCart(id) {
+            const p = products.find(x => x.id === id);
+            const item = cart.find(x => x.id === id);
+            item ? item.qty++ : cart.push({id: p.id, name: p.name, price: p.price, img: p.images[0], qty: 1});
+            renderCart();
+            openCart();
+        }
+
+        function renderCart() {
+            const list = document.getElementById('cart-list');
+            let subtotal = 0;
+            list.innerHTML = cart.length ? '' : '<div class="text-center py-8"><i class="fas fa-shopping-basket text-4xl text-gray-300 mb-2"></i><p class="text-gray-400 text-sm">ยังไม่มีสินค้า</p></div>';
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <img src="${item.img}" class="w-10 h-10 object-contain bg-white rounded border">
+                            <div class="w-32"><p class="font-bold text-xs truncate text-blue-900">${item.name}</p><p class="text-red-600 font-bold text-xs">฿${item.price.toLocaleString()}</p></div>
+                        </div>
+                        <div class="flex items-center gap-1 bg-white border rounded p-0.5">
+                            <button onclick="changeQty(${item.id},-1)" class="w-5 h-5 text-gray-500 hover:text-red-500">-</button>
+                            <span class="font-bold text-xs w-4 text-center">${item.qty}</span>
+                            <button onclick="changeQty(${item.id},1)" class="w-5 h-5 text-gray-500 hover:text-green-500">+</button>
+                        </div>
+                    </div>`;
+            });
+
+            const shippingCost = parseInt(document.querySelector('input[name="shipping"]:checked')?.value || 0);
+            const couponVal = document.getElementById('coupon-select').value;
+            let discount = (couponVal == "50") ? 50 : (couponVal == "10" ? subtotal * 0.1 : 0);
+
+            document.getElementById('subtotal').innerText = `฿${subtotal.toLocaleString()}`;
+            document.getElementById('shipping-cost').innerText = `฿${shippingCost.toLocaleString()}`;
+            document.getElementById('discount').innerText = `-฿${discount.toLocaleString()}`;
+            document.getElementById('cart-total').innerText = `฿${Math.max(0, subtotal + shippingCost - discount).toLocaleString()}`;
+            document.getElementById('cart-count').innerText = cart.reduce((a,b)=>a+b.qty, 0);
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(x => x.id === id);
+            if(item) {
+                item.qty += delta;
+                if(item.qty <= 0) cart = cart.filter(x => x.id !== id);
+            }
+            renderCart();
+        }
+
+        function checkOut() {
+            if(!currentUser) return location.href = 'login.html';
+            if(!cart.length) return alert('กรุณาเลือกสินค้า');
+            
+            const shipName = document.getElementById('ship-name').value;
+            const shipAddress = document.getElementById('ship-address').value;
+            const shipPhone = document.getElementById('ship-phone').value;
+            if(!shipName || !shipAddress || !shipPhone) return alert('กรุณากรอกที่อยู่จัดส่งให้ครบถ้วน');
+
+            const orderId = 'INV-' + Math.floor(100000 + Math.random() * 900000);
+            const shippingCost = parseInt(document.querySelector('input[name="shipping"]:checked').value);
+            
+            const orderData = {
+                id: orderId,
+                user: currentUser.user,
+                items: cart,
+                subtotal: document.getElementById('subtotal').innerText,
+                discount: document.getElementById('discount').innerText,
+                shippingCost: shippingCost,
+                total: document.getElementById('cart-total').innerText,
+                orderDate: new Date().toLocaleString('th-TH'),
+                shipping: { name: shipName, address: shipAddress, phone: shipPhone }
+            };
+
+            localStorage.setItem('latestOrder', JSON.stringify(orderData));
+            let history = JSON.parse(localStorage.getItem('order_history')) || [];
+            history.push(orderData);
+            localStorage.setItem('order_history', JSON.stringify(history));
+
+            location.href = 'receipt.html';
+        }
+
+        function generateStars(rating) {
+            let html = '';
+            for(let i=1; i<=5; i++) html += (i <= Math.floor(rating)) ? '<i class="fas fa-star text-yellow-400"></i>' : (i - 0.5 <= rating) ? '<i class="fas fa-star-half-alt text-yellow-400"></i>' : '<i class="far fa-star text-gray-300"></i>';
+            return html;
+        }
+
+        function setRating(n) {
+            currentRatingInput = n;
+            document.querySelectorAll('#star-input i').forEach((s, i) => s.className = (i < n) ? 'fas fa-star text-yellow-400 cursor-pointer' : 'far fa-star text-gray-300 cursor-pointer');
+        }
+
+        function submitReview() {
+            if(!currentUser) return alert('กรุณาล็อกอิน');
+            if(!currentRatingInput) return alert('กรุณาเลือกดาว');
+            const review = { user: currentUser.user, rating: currentRatingInput, text: document.getElementById('review-text').value || 'สินค้าคุณภาพดีมาก', date: new Date().toLocaleDateString('th-TH') };
+            let allReviews = JSON.parse(localStorage.getItem('product_reviews')) || {};
+            if(!allReviews[activeProductId]) allReviews[activeProductId] = [];
+            allReviews[activeProductId].unshift(review);
+            localStorage.setItem('product_reviews', JSON.stringify(allReviews));
+            document.getElementById('review-text').value = '';
+            setRating(0);
+            loadReviews(activeProductId);
+        }
+
+        function loadReviews(productId) {
+            const reviews = (JSON.parse(localStorage.getItem('product_reviews')) || {})[productId] || [];
+            document.getElementById('review-list').innerHTML = reviews.length ? reviews.map(r => `<div class="bg-white p-3 rounded border border-gray-100"><div class="flex justify-between text-xs font-bold mb-1 text-blue-900"><span>${r.user}</span><span class="text-gray-400 font-normal">${r.date}</span></div><div class="mb-1 text-[10px]">${generateStars(r.rating)}</div><p class="text-sm text-gray-600">${r.text}</p></div>`).join('') : '<p class="text-gray-400 text-sm">ยังไม่มีรีวิว</p>';
+        }
+
+        function logout() { localStorage.removeItem('currentUser'); location.reload(); }
+
+        init();
+    </script>
+</body>
+</html>
