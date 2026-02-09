@@ -6,12 +6,13 @@
     <title>JIB Clone - IT & Gaming Gear</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f2f4f5; }
         .jib-gradient { background: linear-gradient(90deg, #001f5b 0%, #0045a0 100%); }
+        .flash-gradient { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
         .star-rating { color: #fbbf24; }
-        .modal-animate { animation: fadeIn 0.2s ease-out; }
+        .modal-animate { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .thumb-active { border: 2px solid #0045a0; }
         .badge-hot { 
@@ -23,6 +24,14 @@
             z-index: 10;
         }
         .category-active { color: #0045a0 !important; border-bottom: 2px solid #0045a0; }
+        
+        /* Animation สำหรับ Flash Sale */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 65, 108, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 65, 108, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 65, 108, 0); }
+        }
+        .animate-pulse-red { animation: pulse-red 2s infinite; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -81,6 +90,17 @@
 
     <main class="container mx-auto p-4">
         
+        <div onclick="openPromoModal()" class="cursor-pointer mb-8 bg-gradient-to-r from-red-600 to-orange-500 rounded-xl p-4 flex items-center justify-between text-white shadow-lg transform hover:scale-[1.01] transition">
+            <div class="flex items-center gap-4">
+                <div class="bg-white text-red-600 font-extrabold px-3 py-1 rounded animate-pulse">LIVE</div>
+                <div>
+                    <h2 class="text-2xl font-bold italic">FLASH SALE ลดกระหน่ำ!</h2>
+                    <p class="text-white/90 text-sm">คลิกเพื่อดูสินค้าราคาพิเศษ จำนวนจำกัด</p>
+                </div>
+            </div>
+            <div class="text-3xl animate-bounce mr-4"><i class="fas fa-bolt"></i></div>
+        </div>
+
         <div class="w-full h-48 md:h-80 rounded-xl overflow-hidden mb-8 shadow-md relative group">
             <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=1200&q=80" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex flex-col justify-center px-10 text-white">
@@ -109,6 +129,45 @@
             <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
         </div>
     </main>
+
+    <div id="promo-modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-[300] p-4 backdrop-blur-md">
+        <div class="bg-white rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl modal-animate relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closePromoModal()" class="absolute top-4 right-4 z-20 bg-white/20 hover:bg-white text-white hover:text-red-600 rounded-full w-10 h-10 flex items-center justify-center transition border border-white/50">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+
+            <div class="bg-gray-900 text-white relative overflow-hidden py-10 px-6 text-center">
+                <img src="https://images.unsplash.com/photo-1605901309584-818e25960b8f?w=1600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                <div class="relative z-10">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-500 drop-shadow-lg italic">
+                        FLASH SALE
+                    </h1>
+                    <p class="text-lg mb-6 text-gray-200">ลดกระหน่ำ เฉพาะเวลานี้เท่านั้น!</p>
+                    
+                    <div class="flex justify-center gap-3 text-center">
+                        <div class="bg-black/40 backdrop-blur border border-white/20 p-2 rounded w-20">
+                            <span id="h" class="text-3xl font-bold block text-yellow-400">02</span><span class="text-[10px] uppercase">ชม.</span>
+                        </div>
+                        <div class="bg-black/40 backdrop-blur border border-white/20 p-2 rounded w-20">
+                            <span id="m" class="text-3xl font-bold block text-yellow-400">45</span><span class="text-[10px] uppercase">นาที</span>
+                        </div>
+                        <div class="bg-black/40 backdrop-blur border border-white/20 p-2 rounded w-20">
+                            <span id="s" class="text-3xl font-bold block text-red-500">12</span><span class="text-[10px] uppercase">วินาที</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 bg-gray-50">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-bolt text-yellow-500 text-2xl animate-pulse"></i>
+                    <h2 class="text-xl font-bold text-gray-800">สินค้านาทีทอง</h2>
+                </div>
+                <div id="promo-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    </div>
+            </div>
+        </div>
+    </div>
 
     <div id="cart-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[200] p-4 backdrop-blur-sm">
         <div class="bg-white rounded-lg w-full max-w-md overflow-hidden shadow-2xl modal-animate flex flex-col max-h-[95vh]">
@@ -202,6 +261,7 @@
                         </button>
                     </div>
                 </div>
+                
                 <div class="mt-10 border-t pt-6 bg-gray-50 p-4 rounded-lg">
                     <h3 class="font-bold mb-4 text-gray-800">ความคิดเห็นจากลูกค้า</h3>
                     <div id="write-review-box" class="hidden bg-white p-4 rounded border mb-4">
@@ -224,33 +284,32 @@
     <script>
         const fallbackImg = "https://via.placeholder.com/400x400?text=No+Image";
         
-        // ข้อมูลสินค้า 16 รายการ เรียงตามหมวดหมู่ (ชื่อไทย)
+        // ข้อมูลสินค้าหลัก
         const products = [
-            // --- ACCESSORIES ---
             { id: 5, name: "ลำโพงบลูทูธพกพา", category: "ACCESSORIES", price: 4200, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/th-11134207-7rasc-m2htt2nakip08d.webp", "https://down-th.img.susercontent.com/file/th-11134207-7rasa-m2htsxtlmp44d4.webp"], desc: "- กำลังขับ 20W เสียงเบสแน่น\n- กันน้ำระดับ IPX7", rating: 4.6, reviews: 156 },
             { id: 10, name: "พาวเวอร์แบงค์ 20000mAh PD", category: "ACCESSORIES", price: 990, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/th-11134207-7rasg-m4a61hy2asyf12@resize_w450_nl.webp", "https://down-th.img.susercontent.com/file/th-11134207-7rasl-m4a61hy29ds4c0@resize_w450_nl.webp"], desc: "- ความจุ 20,000 mAh\n- รองรับชาร์จเร็ว PD 20W", rating: 4.5, reviews: 410 },
             { id: 13, name: "SSD พกพา 1TB USB-C", category: "ACCESSORIES", price: 3290, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/th-11134201-7r991-lrijnfap09ta14@resize_w450_nl.webp", "https://down-th.img.susercontent.com/file/th-11134201-7r98q-lrijnf9l1wg617.webp"], desc: "- อ่าน/เขียน 1050MB/s\n- เชื่อมต่อ USB 3.2 Gen 2 Type-C", rating: 4.9, reviews: 34 },
             { id: 16, name: "เราเตอร์ Wi-Fi 6 AX3000", category: "ACCESSORIES", price: 1990, isBestSeller: true, images: ["https://down-th.img.susercontent.com/file/th-11134201-7rasl-m77f6c8cperba9.webp", "https://down-th.img.susercontent.com/file/th-11134201-7rasd-m77f6cfkew9s4b.webp"], desc: "- Dual Band Gigabit\n- ความเร็วสูงสุด 3000Mbps\n- รองรับ MU-MIMO", rating: 4.7, reviews: 110 },
-
-            // --- GADGET ---
             { id: 4, name: "กล้อง Mirrorless Full Frame", category: "GADGET", price: 35000, isBestSeller: false, images: ["https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600", "https://images.unsplash.com/photo-1522133321627-c187a111362d?w=600"], desc: "- เซนเซอร์ Full Frame\n- ถ่ายวิดีโอ 4K", rating: 5.0, reviews: 42 },
             { id: 9, name: "สมาร์ทวอทช์ Series 7 GPS", category: "GADGET", price: 9900, isBestSeller: false, images: ["https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600", "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600"], desc: "- จอภาพ Always-On Retina\n- วัดค่าสุขภาพแม่นยำ", rating: 4.7, reviews: 65 },
             { id: 11, name: "หุ่นยนต์ดูดฝุ่น เลเซอร์นำทาง", category: "GADGET", price: 8500, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/th-11134207-7ras8-m3asph1hznxk51.webp", "https://down-th.img.susercontent.com/file/th-11134207-7rasa-m3asph21yup405.webp"], desc: "- ระบบนำทางด้วยเลเซอร์\n- สั่งงานผ่านแอปฯ มือถือ", rating: 4.6, reviews: 92 },
             { id: 15, name: "เมาส์ปากกาสำหรับวาดรูป 10 นิ้ว", category: "GADGET", price: 4500, isBestSeller: false, images: ["https://down-th.img.susercontent.com/file/839f43a7c8a3da87c650ade0387917fe.webp", "https://down-th.img.susercontent.com/file/dc99ffa4b90ecc238a01d8fb368eec81.webp"], desc: "- แรงกด 8192 ระดับ\n- ปากกาไม่ต้องชาร์จ\n- ปุ่มลัด 6 ปุ่ม", rating: 4.8, reviews: 19 },
-
-            // --- GAMING ---
             { id: 6, name: "หูฟังไร้สาย ANC ตัดเสียงรบกวน", category: "GAMING", price: 6500, isBestSeller: true, images: ["https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600", "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600"], desc: "- ตัดเสียงรบกวน Active Noise Cancelling\n- แบตเตอรี่นาน 30 ชม.", rating: 4.9, reviews: 320 },
             { id: 7, name: "เมาส์เกมมิ่ง RGB 16K DPI", category: "GAMING", price: 1290, isBestSeller: false, images: ["https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600", "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600"], desc: "- เซนเซอร์ 16,000 DPI\n- ไฟ RGB ปรับแต่งได้", rating: 4.4, reviews: 78 },
             { id: 8, name: "คีย์บอร์ดแมคคานิคอล RGB", category: "GAMING", price: 2500, isBestSeller: true, images: ["https://images.unsplash.com/photo-1595225476474-87563907a212?w=600", "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600"], desc: "- Blue Switch เสียงกดสนุก\n- ไฟ RGB Backlight", rating: 4.8, reviews: 150 },
             { id: 14, name: "ไมโครโฟนสตรีมมิ่ง USB", category: "GAMING", price: 2990, isBestSeller: false, images: ["https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600", "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=600"], desc: "- ไมค์คอนเดนเซอร์สำหรับสตรีม\n- มี Pop Filter ในตัว\n- เสียบแล้วใช้ได้เลย", rating: 4.6, reviews: 82 },
-
-            // --- MONITOR ---
-            { id: 1, name: "สมาร์ททีวี 55 นิ้ว 4K UHD HDR", category: "MONITOR", price: 15900, isBestSeller: true, images: ["data:image/jpeg;base64,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Ck75lcP8LVelj+Gq/Mrh/har0sfw08x+DZ+kaMxdv22+cFeGKx+Eb5wUi/Mrh/har0sfw0+ZXD/C1XpY/hqOt+Ftr+zg24vF4Vnnt/NX4cYiP96zz2/mu1+ZbD/C1XpY/hp8y2H+FqvSx/DVXkv4JVnIDFovDR+kb+aqcXi8PH6Rv5rrz2GcPH99Velj+Go42lwSkM/cmFNqauoaf1jw5j42fsjKwA7jdxIaN2p3V3fhbczb/LEfho/SN/NV+VYj/fR+kb+awex9s3SVcstLVmohq4yRkDmN1G9pa5hN+X9FII7D9D4ap9JF8NN5O41nYuna/EqtzXBw7ghFwbi4nk0uOseVSuuY2U2Ip8PkfJC+VzpGZDncwgNzX0ytGq6dUZUIiIAiIgKFRxtW+oxKqFBAySOkjN6ioMbg023sjc4WceAtfUm+gUkIgNZg+CRU0TIYm5Y2CwAcR1k8yd5PFeIdmqRk5qW00bal17yhtnuuLG7hvuFtkQFsRDp8pXsNVUQBERAEREBSyWVUQFLJZVRAUsq2REAREQFLLyY+vyle0QGNU0LJGuY9uZj2lrmkkhzSLEEcli4XgNPTMMdPC2JhNy1gygnmbb1s0QHA7ebFulIrKTSupxdpGhnYNe1u5nTQnq3HToNj8bNXA10kT4qhneyxvjcwh/2gHAXad/sW+RAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH/9k=", "https://images.unsplash.com/photo-1601944179066-29786cb9d32a?w=600"], desc: "- จอ 4K UHD 3840x2160\n- ระบบ Android TV", rating: 4.8, reviews: 125 },
+            { id: 1, name: "สมาร์ททีวี 55 นิ้ว 4K UHD HDR", category: "MONITOR", price: 15900, isBestSeller: true, images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600", "https://images.unsplash.com/photo-1601944179066-29786cb9d32a?w=600"], desc: "- จอ 4K UHD 3840x2160\n- ระบบ Android TV", rating: 4.8, reviews: 125 },
             { id: 12, name: "จอเกมมิ่ง 27 นิ้ว 165Hz", category: "MONITOR", price: 7900, isBestSeller: false, images: ["https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600", "https://images.unsplash.com/photo-1616763355548-1b606f439f86?w=600"], desc: "- จอ IPS 27 นิ้ว\n- รีเฟรชเรท 165Hz", rating: 4.8, reviews: 55 },
-
-            // --- NOTEBOOK ---
             { id: 2, name: "โน้ตบุ๊ก Ultra Slim Core i7", category: "NOTEBOOK", price: 28900, isBestSeller: true, images: ["https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?w=600", "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600"], desc: "- Intel Core i7 Gen 11\n- 16GB RAM / 512GB SSD", rating: 4.7, reviews: 89 },
             { id: 3, name: "แท็บเล็ต Pro 11 นิ้ว WiFi 128GB", category: "NOTEBOOK", price: 12500, isBestSeller: false, images: ["https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=600", "https://images.unsplash.com/photo-1612392175254-5b6b67f611b8?w=600"], desc: "- จอ Retina 11 นิ้ว\n- รองรับปากกา Stylus", rating: 4.5, reviews: 210 }
+        ];
+
+        // ข้อมูลสินค้า FLASH SALE (เพิ่มเข้ามา)
+        const promoProducts = [
+            { id: 901, name: "หูฟัง Gaming 7.1 Surround (ตัวโชว์)", price: 990, oldPrice: 2590, img: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400", sold: 85 },
+            { id: 902, name: "คีย์บอร์ด Mechanical ไร้สาย", price: 1590, oldPrice: 3200, img: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=400", sold: 92 },
+            { id: 903, name: "เมาส์ Wireless น้ำหนักเบา", price: 590, oldPrice: 1290, img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400", sold: 45 },
+            { id: 904, name: "แผ่นรองเมาส์ RGB ขนาดยักษ์", price: 290, oldPrice: 890, img: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400", sold: 70 },
         ];
 
         let cart = [];
@@ -261,6 +320,9 @@
 
         function init() {
             filterCategory('ALL');
+            renderPromoItems();
+            startTimer();
+
             if(currentUser) {
                 document.getElementById('auth-status').innerHTML = `
                     <div class="flex items-center gap-3">
@@ -274,7 +336,87 @@
                     </div>`;
                 document.getElementById('write-review-box').classList.remove('hidden');
             }
+
+            // ให้ Popup เด้งขึ้นมาเองเมื่อโหลดหน้าเว็บ
+            setTimeout(() => {
+                openPromoModal();
+            }, 800);
         }
+
+        // ======================= LOGIC FLASH SALE =======================
+
+        function renderPromoItems() {
+            const grid = document.getElementById('promo-grid');
+            grid.innerHTML = promoProducts.map(p => {
+                const discount = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+                return `
+                <div class="bg-white border rounded-lg overflow-hidden hover:shadow-lg transition group relative">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-red-700 font-extrabold px-2 py-1 rounded text-xs z-10 shadow">
+                        -${discount}%
+                    </div>
+                    <div class="h-40 overflow-hidden bg-gray-100 flex items-center justify-center">
+                        <img src="${p.img}" class="w-full h-full object-contain group-hover:scale-110 transition duration-300 p-4">
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-bold text-gray-800 text-sm line-clamp-1 mb-1">${p.name}</h3>
+                        <div class="flex items-end gap-2 mb-2">
+                            <span class="text-xl font-bold text-red-600">฿${p.price.toLocaleString()}</span>
+                            <span class="text-xs text-gray-400 line-through mb-1">฿${p.oldPrice.toLocaleString()}</span>
+                        </div>
+                        
+                        <div class="w-full bg-gray-200 rounded-full h-2 mb-1">
+                            <div class="bg-red-500 h-2 rounded-full" style="width: ${p.sold}%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-gray-500 mb-2">
+                            <span>ขายแล้ว ${p.sold}%</span>
+                            <span class="text-red-500 font-bold">เหลือ ${100 - p.sold} ชิ้น</span>
+                        </div>
+
+                        <button onclick="addPromoToCart(${p.id})" class="w-full bg-red-600 text-white py-1.5 rounded text-sm font-bold hover:bg-red-700 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-cart-plus"></i> ทันที
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function startTimer() {
+            let time = 7200 + 45 * 60 + 12; // 2 ชม 45 นาที
+            setInterval(() => {
+                time--;
+                if(time < 0) time = 7200;
+                const h = Math.floor(time / 3600);
+                const m = Math.floor((time % 3600) / 60);
+                const s = time % 60;
+                document.getElementById('h').innerText = h.toString().padStart(2,'0');
+                document.getElementById('m').innerText = m.toString().padStart(2,'0');
+                document.getElementById('s').innerText = s.toString().padStart(2,'0');
+            }, 1000);
+        }
+
+        // เพิ่มสินค้าโปรโมชั่นลงตะกร้า (แยกฟังก์ชันเพราะ Data Source ต่างกัน)
+        function addPromoToCart(id) {
+            const p = promoProducts.find(x => x.id === id);
+            if(!p) return;
+            
+            const item = cart.find(x => x.id === id);
+            if(item) {
+                item.qty++;
+            } else {
+                cart.push({id: p.id, name: p.name, price: p.price, img: p.img, qty: 1});
+            }
+            
+            renderCart();
+            // ปิด Modal Promo แล้วเปิดตะกร้าแทน เพื่อให้ลูกค้ารู้ว่าของเข้าแล้ว
+            closePromoModal();
+            setTimeout(() => openCart(), 300);
+        }
+
+        function openPromoModal() { document.getElementById('promo-modal').classList.remove('hidden'); }
+        function closePromoModal() { document.getElementById('promo-modal').classList.add('hidden'); }
+
+
+        // ======================= LOGIC หลักเดิม =======================
 
         function filterCategory(category) {
             currentCategory = category;
@@ -459,9 +601,26 @@
             loadReviews(activeProductId);
         }
 
+        // ฟังก์ชันโหลดรีวิวและแสดง Reply จาก Admin
         function loadReviews(productId) {
             const reviews = (JSON.parse(localStorage.getItem('product_reviews')) || {})[productId] || [];
-            document.getElementById('review-list').innerHTML = reviews.length ? reviews.map(r => `<div class="bg-white p-3 rounded border border-gray-100"><div class="flex justify-between text-xs font-bold mb-1 text-blue-900"><span>${r.user}</span><span class="text-gray-400 font-normal">${r.date}</span></div><div class="mb-1 text-[10px]">${generateStars(r.rating)}</div><p class="text-sm text-gray-600">${r.text}</p></div>`).join('') : '<p class="text-gray-400 text-sm">ยังไม่มีรีวิว</p>';
+            document.getElementById('review-list').innerHTML = reviews.length ? reviews.map(r => `
+                <div class="bg-white p-3 rounded border border-gray-100">
+                    <div class="flex justify-between text-xs font-bold mb-1 text-blue-900">
+                        <span>${r.user}</span>
+                        <span class="text-gray-400 font-normal">${r.date}</span>
+                    </div>
+                    <div class="mb-1 text-[10px]">${generateStars(r.rating)}</div>
+                    <p class="text-sm text-gray-600 mb-2">${r.text}</p>
+                    
+                    ${r.adminReply ? `
+                    <div class="bg-gray-100 p-2 rounded border-l-2 border-blue-900 text-xs ml-4 mt-2">
+                        <p class="font-bold text-blue-900 mb-1"><i class="fas fa-user-shield"></i> JIB Clone Admin</p>
+                        <p class="text-gray-700">${r.adminReply}</p>
+                    </div>` : ''}
+
+                </div>
+            `).join('') : '<p class="text-gray-400 text-sm">ยังไม่มีรีวิว</p>';
         }
 
         function logout() { localStorage.removeItem('currentUser'); location.reload(); }

@@ -20,12 +20,30 @@
         <p class="text-center mt-2 text-xs"><a href="index.html" class="text-gray-400 hover:text-gray-600">กลับหน้าหลัก</a></p>
     </div>
     <script>
-        function login() {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(x => x.user === document.getElementById('u').value && x.pass === document.getElementById('p').value);
-            if(user) { localStorage.setItem('currentUser', JSON.stringify(user)); location.href = 'index.html'; }
-            else alert('ข้อมูลไม่ถูกต้อง');
-        }
+        // แก้ไขฟังก์ชัน login ในไฟล์ login.html
+function login() {
+    const u = document.getElementById('u').value;
+    const p = document.getElementById('p').value;
+
+    // ตรวจสอบว่าเป็นแอดมินหรือไม่ (Hardcoded Admin)
+    if(u === "admin" && p === "1234") {
+        const adminUser = { user: "admin", role: "admin" };
+        localStorage.setItem('currentUser', JSON.stringify(adminUser));
+        location.href = 'admin.html'; // ส่งไปหน้าแอดมิน
+        return;
+    }
+
+    // ตรวจสอบ User ทั่วไปจาก LocalStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(x => x.user === u && x.pass === p);
+    
+    if(user) { 
+        localStorage.setItem('currentUser', JSON.stringify(user)); 
+        location.href = 'index.html'; 
+    } else {
+        alert('ข้อมูลไม่ถูกต้อง');
+    }
+}
     </script>
 </body>
 </html>
